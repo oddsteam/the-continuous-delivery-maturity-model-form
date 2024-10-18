@@ -1,0 +1,6 @@
+<div class="w-4 h-4 overflow-hidden cursor-pointer" data-controller="tristate-checkbox" data-action="click->tristate-checkbox#toggle <%= "#{event_sensor}@window->tristate-checkbox#toggle" if defined?(event_sensor) %>" data-tristate-checkbox-state-value="<%= state %>" data-tristate-checkbox-identifier-value="<%= identifier %>">
+    <input name="<%= identifier %>" type="hidden" value="unchecked" data-tristate-checkbox-target="value">
+    <div data-tristate-checkbox-target="unchecked" class="w-full h-full rounded border border-slate-300"></div>
+    <div data-tristate-checkbox-target="checked" class="w-full h-full rounded border border-blue-500 bg-blue-500"></div>
+    <div data-tristate-checkbox-target="inapplicable" class="w-full h-full rounded border border-red-500 bg-red-500"></div>
+</div>

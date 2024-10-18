@@ -10,10 +10,10 @@ module HomeHelper
     end
 
     def label_to_key(label)
-        label.gsub(/::/, '/')
+        label.gsub(/::/, '__')
             .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
             .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-            .tr("-", "_")
             .downcase
+            .gsub(/[^a-z]/, '_')
     end
 end
