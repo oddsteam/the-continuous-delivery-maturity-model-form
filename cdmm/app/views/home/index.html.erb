@@ -14,7 +14,7 @@
             <tr>
                 <td class="sticky left-0 border-gray-300 bg-slate-100 border border-t-0 p-2 text-center text-xs md:text-sm font-bold z-10"><%= row_header %></td>
                 <% @table[:col_headers].each_with_index do |col_header, col_index| %>
-                    <td class="relative border-gray-300 border border-l-0 border-t-0 p-2 text-xs md:text-sm">
+                    <td class="relative border-gray-300 border border-l-0 border-t-0 p-2 text-xs md:text-sm align-top">
                         <div class="flex flex-col gap-y-4 items-start">
                         <% get_data_at(@table, row_index, col_index).each_with_index do |data, data_index| %>
                         <%= render :partial => "capability_item", :locals => { label: data[:label], description: data[:description] } %>
