@@ -3,7 +3,7 @@
         <%= render "shared/tristate_checkbox", state: "unchecked", identifier: label_to_key(label), event_sensor: "#{label_to_key(label)}:triggered" %>
     </div>
     <div>
-        <label data-action="click->event-sensor#invoke" for="<%= label_to_key(label) %>" class="font-semibold text-slate-600 inline-flex text-xs md:text-sm select-none cursor-pointer hover:underline"><%= label %></label>
+        <label data-action="click->event-sensor#invoke" for="<%= label_to_key(label) %>" class="leading-4 font-semibold text-slate-600 inline-flex text-xs md:text-sm select-none cursor-pointer hover:underline"><%= label %></label>
         <p class="text-xs text-slate-400 inline-flex select-none"><%= description %></p>
     </div>
 </div>
