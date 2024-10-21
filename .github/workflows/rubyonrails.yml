@@ -1,0 +1,58 @@
+# This workflow uses actions that are not certified by GitHub.  They are
+# provided by a third-party and are governed by separate terms of service,
+# privacy policy, and support documentation.
+#
+# This workflow will install a prebuilt Ruby version, install dependencies, and
+# run tests and linters.
+name: "Ruby on Rails CI"
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.5'
+          bundler-cache: true
+      - name: Set up database schema
+        working-directory: ./cdmm
+        run: bundle install && bin/rails db:schema:load && bin/rails db:migrate
+      - name: Run tests
+        working-directory: ./cdmm
+        run: bin/rake
+      - name: Trigger deployment on Render and wait until it complete
+        run: |
+          # Check application status using curl, wait-for-it, etc.
+          service_id="srv-cqo5no0gph6c73b3gddg"
+          deploy_id=$(curl -s https://api.render.com/deploy/$service_id?key=iT2SfwQUYDw | jq -r '.deploy.id')
+          echo "Deployment ID: $deploy_id"
+          deploy_status_url="https://api.render.com/v1/services/$service_id/deploys/$deploy_id"
+          api_key="rnd_ejsplCUnVpUeAeyLlye6FX4rVvvT"
+          retries=30
+          while [[ $retries -gt 0 ]]; do
+            # echo -n "."
+            status=$(curl -s --url $deploy_status_url \
+              --request GET \
+              --header "Authorization: Bearer $api_key" | jq -r '.status')
+            echo $status
+            if test "$status" = "live"
+            then
+              echo ""
+              echo "Deployment successful!"
+              exit 0
+            fi
+            retries=$((retries - 1))
+            sleep 10
+          done
+          echo ""
+          echo "Deployment failed: Timeout"
+          exit 1
