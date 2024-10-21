@@ -14,7 +14,7 @@ class CdmmController < ApplicationController
 
     def save()
         form_key = params[:form_key]
-        if form_key == ""
+        unless params[:form_key] or params[:form_key].present?
             form_key = generate_unique_form_key
             ev = Evaluation.new(evaluation_params.merge(form_key: form_key))
         else
