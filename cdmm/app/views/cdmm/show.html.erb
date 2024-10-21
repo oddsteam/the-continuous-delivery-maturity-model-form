@@ -1,0 +1,15 @@
+<div class="w-full">
+    <%= form_with url: evaluation_save_path, method: :post, data: { turbo: false } do |form|  %>
+        <input type="hidden" name="form_key" value="<%= params[:form_key] %>">
+        <div class="flex flex-row justify-between items-center">
+            <h1 class="noto-serif-thai-bold text-xl md:text-2xl lg:text-3xl leading-loose">Continuous Delivery Maturity Model</h1>
+            <button class="p-2 border rounded w-8 h-8 bg-slate-700" data-action="click->page-capture#capture">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-full h-full text-slate-100">
+                    <path d="M1 12l0 9l22 0l0 -9" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M12 2l0 14M5 10l7 6l7 -6" fill="none" stroke-width="4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+        <%= render "form_table", table: @table %>
+    <% end %>
+</div>
