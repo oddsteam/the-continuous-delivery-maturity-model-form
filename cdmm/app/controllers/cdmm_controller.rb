@@ -1,12 +1,35 @@
 class CdmmController < ApplicationController
+    # Viewing
+    # if form_key is empty, it will create a draft version and show the default data
+    # if form_key is in the database, it will populate data and show them
+    # if form_key is not in the database, show not_found
+
+    # Saving with form_key will always success too
+    # if form_key is not in the database, it will show not found
+    # if form_key is in the database, it will update the data and change draft to published.
+    # once form data is published, it will never be changed back to draft
+
+    # Purging
+    # draft form will be purged regularly
+
     def index
-        @table = evaluation_table
+        form_key = generate_unique_form_key
+        # Auto create a draft
+        ev = Evaluation.new(evaluation_params.merge(form_key: form_key))
+        ev.form_status = :draft
+        if ev.save
+            redirect_to evaluation_show_path(ev.form_key), notice: 'Draft evaluation was successfully created.'
+        else
+            # Handle errors (e.g., re-render the form with errors)
+            render_internal_server_error
+        end
     end
 
     def show()
         @form = Evaluation.find_by(form_key: params[:form_key])
         if @form
-            @table = evaluation_table(@form)
+            form_key = params[:form_key]
+            @table = evaluation_table(@form, form_key)
         else
             render_not_found
         end
@@ -26,9 +49,21 @@ class CdmmController < ApplicationController
                 return # Prevent further execution
             end
         end
-
+        ev.form_status = :published
         if ev.save
-            redirect_to evaluation_show_path(ev.form_key), notice: 'Evaluation was successfully created.'
+            @table = evaluation_table(ev, form_key)
+            respond_to do |format|
+                format.turbo_stream {
+                  render turbo_stream:
+                  turbo_stream
+                    .replace("evaluation_form",
+                    partial: "form_table",
+                    locals: { table: @table })
+                }
+                format.html {
+                    redirect_to evaluation_show_path(ev.form_key), notice: 'Evaluation was successfully created.'
+                }
+              end          
         else
             # Handle errors (e.g., re-render the form with errors)
             render_internal_server_error
@@ -41,8 +76,12 @@ class CdmmController < ApplicationController
         cell[:value] = form_data[cell[:key]]
     end
 
-    def evaluation_table(form_data = nil)
+    def evaluation_table(form_data = nil, form_key = nil)
+        default_table_title = Date.today.strftime("%B %d, %Y")
         table = {
+            :form_key => form_key ? form_key : "",
+            :form_status => :draft,
+            :title => "Untitled - #{default_table_title}",
             :col_headers => [ "Initial", "Managed", "Defined", "Qualitatively Managed", "Optimizing" ],
             :row_headers => [ "Culture & Organization", "Build & Deploy", "Release", "Data Management", "Test & Verification", "Information & Reporting" ],
             :rows => [
@@ -550,7 +589,7 @@ class CdmmController < ApplicationController
                 end
             end
         end
-      
+
         table
     end
 
@@ -630,8 +669,10 @@ class CdmmController < ApplicationController
     end
 
     def evaluation_params
+        # Do not put form_status here to prevent status injection.
         params.permit(
             :form_key, # Make sure to permit form_key
+            :title,
             *evaluation_form
         )
     end
