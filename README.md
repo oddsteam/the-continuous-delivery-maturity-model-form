@@ -1,4 +1,4 @@
-# The Continuous Delivery Maturity Assessment Form
+# The Continuous Delivery Maturity Model Assessment Form
 
 This form is designed to help teams assess their current level of maturity in
 implementing Continuous Delivery (CD) practices. By completing the assessment,
