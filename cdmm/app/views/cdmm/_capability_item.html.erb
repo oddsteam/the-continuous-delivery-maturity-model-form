@@ -1,6 +1,6 @@
 <div class="flex flex-row" data-controller="event-sensor" data-event-sensor-identifier-value="<%= key %>">
     <div class="mr-2">
-        <%= render "shared/tristate_checkbox", state: value, identifier: key, event_sensor: "#{key}:triggered" %>
+        <%= render "shared/tristate_checkbox", state: value, input_name: key, event_sensor: "#{key}:triggered", identifier: "capability" %>
     </div>
     <div>
         <label data-action="click->event-sensor#invoke" for="<%= key %>" class="leading-4 font-semibold text-slate-600 inline-flex text-xs md:text-sm select-none cursor-pointer hover:underline"><%= label %></label>

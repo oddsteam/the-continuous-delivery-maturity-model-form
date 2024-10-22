@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="tristate-checkbox"
 export default class extends Controller {
   static targets = [ "unchecked", "checked", "inapplicable", "value" ];
-  static values = { state: String };
+  static values = { state: String, identifier: String };
 
   connect() {
     this.state = this.stateValue || "unchecked";
@@ -21,6 +21,7 @@ export default class extends Controller {
       }
     }
     this.updateView();
+    this.dispatch('toggled', { prefix: this.identifierValue });
   }
 
   updateView() {

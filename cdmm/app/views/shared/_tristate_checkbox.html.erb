@@ -1,5 +1,5 @@
 <div class="w-5 h-5 overflow-hidden cursor-pointer" data-controller="tristate-checkbox" data-action="click->tristate-checkbox#toggle <%= "#{event_sensor}@window->tristate-checkbox#toggle" if defined?(event_sensor) %>" data-tristate-checkbox-state-value="<%= state %>" data-tristate-checkbox-identifier-value="<%= identifier %>">
-    <input name="<%= identifier %>" type="hidden" value="unchecked" data-tristate-checkbox-target="value">
+    <input name="<%= input_name %>" type="hidden" value="unchecked" data-tristate-checkbox-target="value">
     <div data-tristate-checkbox-target="unchecked">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-full h-full text-slate-300">
             <rect x="1" y="1" width="22" height="22" rx="4" ry="4" fill="none" stroke-width="2" stroke="currentColor" />
