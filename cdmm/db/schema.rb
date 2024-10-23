@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_22_091416) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_22_142702) do
   create_table "evaluations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_091416) do
     t.string "customizable_dashboards", default: "unchecked", null: false
     t.string "cross_reference_across_organizational_boundaries", default: "unchecked", null: false
     t.string "form_status"
+    t.string "title"
     t.index ["form_key"], name: "index_evaluation_form_key"
     t.index ["form_status"], name: "index_evaluations_on_form_status"
   end

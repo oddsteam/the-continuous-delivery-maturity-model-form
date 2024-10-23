@@ -14,8 +14,10 @@ class CdmmController < ApplicationController
 
     def index
         form_key = generate_unique_form_key
+        default_table_title = Date.today.strftime("%B %d, %Y")
+        form_title = "Untitled - #{default_table_title}"
         # Auto create a draft
-        ev = Evaluation.new(evaluation_params.merge(form_key: form_key))
+        ev = Evaluation.new(evaluation_params.merge(form_key: form_key, title: form_title))
         ev.form_status = :draft
         if ev.save
             redirect_to evaluation_show_path(ev.form_key), notice: 'Draft evaluation was successfully created.'
@@ -38,12 +40,11 @@ class CdmmController < ApplicationController
     def save()
         form_key = params[:form_key]
         unless params[:form_key] or params[:form_key].present?
-            form_key = generate_unique_form_key
-            ev = Evaluation.new(evaluation_params.merge(form_key: form_key))
+            render_not_found
         else
             ev = Evaluation.find_by(form_key: params[:form_key])
             if ev
-                ev.attributes = evaluation_params # Update attributes for existing record
+                ev.attributes = evaluation_params.except(:authenticity_token) # Update attributes for existing record
             else
                 render_not_found # Handle case where form_key doesn't exist
                 return # Prevent further execution
@@ -54,11 +55,16 @@ class CdmmController < ApplicationController
             @table = evaluation_table(ev, form_key)
             respond_to do |format|
                 format.turbo_stream {
-                  render turbo_stream:
-                  turbo_stream
-                    .replace("evaluation_form",
-                    partial: "form_table",
-                    locals: { table: @table })
+                    render turbo_stream: [
+                        turbo_stream
+                            .replace("evaluation_form",
+                            partial: "form_table",
+                            locals: { table: @table }),
+                        turbo_stream
+                            .replace("evaluation_form_title",
+                            partial: "form_title",
+                            locals: { text: @table[:title] }),
+                    ]
                 }
                 format.html {
                     redirect_to evaluation_show_path(ev.form_key), notice: 'Evaluation was successfully created.'
@@ -77,11 +83,10 @@ class CdmmController < ApplicationController
     end
 
     def evaluation_table(form_data = nil, form_key = nil)
-        default_table_title = Date.today.strftime("%B %d, %Y")
         table = {
             :form_key => form_key ? form_key : "",
             :form_status => :draft,
-            :title => "Untitled - #{default_table_title}",
+            :title => form_data[:title],
             :col_headers => [ "Initial", "Managed", "Defined", "Qualitatively Managed", "Optimizing" ],
             :row_headers => [ "Culture & Organization", "Build & Deploy", "Release", "Data Management", "Test & Verification", "Information & Reporting" ],
             :rows => [
@@ -664,13 +669,14 @@ class CdmmController < ApplicationController
             :real_time_graphs_on_deployment_pipeline_metrics,
             :dynamic_self_service_of_information,
             :customizable_dashboards,
-            :cross_reference_across_organizational_boundarie
+            :cross_reference_across_organizational_boundaries
         ]
     end
 
     def evaluation_params
         # Do not put form_status here to prevent status injection.
         params.permit(
+            :authenticity_token,
             :form_key, # Make sure to permit form_key
             :title,
             *evaluation_form
