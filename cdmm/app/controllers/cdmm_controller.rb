@@ -1,4 +1,5 @@
 class CdmmController < ApplicationController
+    include ApplicationHelper
     # Viewing
     # if form_key is empty, it will create a draft version and show the default data
     # if form_key is in the database, it will populate data and show them
@@ -53,6 +54,7 @@ class CdmmController < ApplicationController
         ev.form_status = :published
         if ev.save
             @table = evaluation_table(ev, form_key)
+            new_page_title = "<title id='page_title'>#{custom_title(ev[:title])}</title>"
             respond_to do |format|
                 format.turbo_stream {
                     render turbo_stream: [
@@ -64,12 +66,14 @@ class CdmmController < ApplicationController
                             .replace("evaluation_form_title",
                             partial: "form_title",
                             locals: { text: @table[:title] }),
+                        turbo_stream
+                            .replace("page_title", new_page_title)
                     ]
                 }
                 format.html {
                     redirect_to evaluation_show_path(ev.form_key), notice: 'Evaluation was successfully created.'
                 }
-              end          
+              end
         else
             # Handle errors (e.g., re-render the form with errors)
             render_internal_server_error
