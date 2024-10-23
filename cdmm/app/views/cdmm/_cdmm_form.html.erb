@@ -1,11 +1,11 @@
-<%= form_with url: evaluation_save_path, method: :post, data: { controller: "auto-submit", action: "capability:toggled@window->auto-submit#dirty capability:toggled@window->auto-submit#submit", turbo_stream: true } do |form|  %>
+<%= form_with url: evaluation_save_path, method: :post, data: { controller: "auto-submit", action: "capability:toggled@window->auto-submit#dirty capability:toggled@window->auto-submit#submit title:changed@window->auto-submit#dirty title:changed@window->auto-submit#submit", turbo_stream: true } do |form|  %>
     <% if table[:form_key] %>
     <input type="hidden" name="form_key" value="<%= table[:form_key] %>">
     <% end %>
     <div class="flex flex-row justify-between items-center mb-2">
         <div class="flex flex-col">
             <div class="flex flex-row justify-start items-center gap-x-2">
-                <h1 class="noto-serif-thai-bold text-xl md:text-2xl lg:text-3xl leading-normal lg:leading-relaxed"><%= table[:title] %></h1>
+                <%= render "form_title", text: table[:title] %>
                 <div data-auto-submit-target="savingIcon" class="h-5 md:h-6 lg:h-8 flex flex-row gap-x-1 items-baseline">
                     <svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" class="text-slate-500" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
                         <g transform="translate(0, -2) matrix(1.01508,0,0,1,0.0940615,0.0723927)">
