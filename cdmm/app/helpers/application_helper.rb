@@ -1,4 +1,8 @@
 module ApplicationHelper
+    def custom_title(title)
+        "#{title} #{default_meta_tags[:separator]} #{default_meta_tags[:site]}"
+    end
+
     def default_meta_tags
         {
             site: 'CDMM',
@@ -10,7 +14,7 @@ module ApplicationHelper
             canonical: request.original_url,
             noindex: !Rails.env.production?,
             icon: [
-                { href: image_url('box.svg'), type: 'image/svg+xml' },
+                # { href: image_url('box.svg'), type: 'image/svg+xml' },
                 # { href: image_url('icon.jpg'), rel: 'apple-touch-icon', sizes: '180x180', type: 'image/jpg' },
             ],
             og: {
@@ -19,7 +23,6 @@ module ApplicationHelper
                 description: 'The Continuous Delivery Maturity Assessment Form', 
                 type: 'website',
                 url: request.original_url,
-                # image: image_url('login-page.png')
             }
         }
     end

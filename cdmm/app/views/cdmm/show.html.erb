@@ -1,3 +1,14 @@
+<%
+    set_meta_tags(
+        title: @table[:title],
+        description: @table[:title],
+        og: {
+            title: @table[:title],
+            description: @table[:title]
+        }
+    )
+%>
+
 <div class="w-full">
     <%= render "cdmm_form", table: @table %>
 </div>
