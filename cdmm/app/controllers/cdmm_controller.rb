@@ -13,6 +13,11 @@ class CdmmController < ApplicationController
     # Purging
     # draft form will be purged regularly
 
+    def purge
+        Evaluation.where(:form_status => :draft).destroy_all
+        render_empty
+    end
+
     def index
         form_key = generate_unique_form_key
         default_table_title = Date.today.strftime("%B %d, %Y")
@@ -691,6 +696,12 @@ class CdmmController < ApplicationController
         loop do
             form_key = SecureRandom.alphanumeric(16)
             break form_key unless Evaluation.exists?(form_key: form_key)
+        end
+    end
+
+    def render_empty
+        respond_to do |format|
+            format.any  { head :ok }
         end
     end
 
