@@ -16,4 +16,4 @@ jobs:
         - name: curl
           uses: enflo/curl-action@master
           with:
-            curl: ${{ secrets.CURL_ARGUMENTS }}
+            curl: https://kraken-cp0o.onrender.com/schedule/purge
