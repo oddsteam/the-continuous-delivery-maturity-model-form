@@ -16,4 +16,4 @@ jobs:
         - name: curl
           uses: enflo/curl-action@master
           with:
-            curl: ${{ env.CURL_ARGUMENTS }}
+            curl: ${{ secrets.CURL_ARGUMENTS }}
