@@ -15,4 +15,4 @@ jobs:
         - name: curl
           uses: enflo/curl-action@master
           with:
-            curl: {{ CURL ARGUMENTS }}
+            curl: ${{ env.CURL_ARGUMENTS }}
