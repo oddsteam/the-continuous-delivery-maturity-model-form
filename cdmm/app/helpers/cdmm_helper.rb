@@ -9,6 +9,16 @@ module CdmmHelper
         end
     end
 
+    def cell_key(table, row_index, col_index)
+        "cell_#{row_index}_#{col_index}"
+    end
+
+    def all_checked?(table, row_index, col_index)
+        data = get_data_at(table, row_index, col_index)
+        unselected_caps = data.select { |cap| cap[:value] == "unchecked" }
+        unselected_caps.count == 0
+    end
+
     def label_to_key(label)
         label.gsub(/::/, '__')
             .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
