@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "cdmm" => "cdmm#index", as: :evaluation_index
   post "cdmm" => "cdmm#save", as: :evaluation_save
   get "cdmm/:form_key" => "cdmm#show", as: :evaluation_show
+  get "schedule/purge" => "cdmm#purge"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
