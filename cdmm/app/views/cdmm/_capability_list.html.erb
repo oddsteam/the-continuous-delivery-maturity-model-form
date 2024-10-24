@@ -1,0 +1,7 @@
+<td data-controller="checklist-ui" data-checklist-ui-complete-classes-value="bg-green-100" data-checklist-ui-item-count-value="<%= get_data_at(table, row_index, col_index).count %>" data-action="capability:toggled->checklist-ui#refresh" class="relative border-gray-300 border border-l-0 border-t-0 p-2 text-xs md:text-sm align-top <%= all_checked?(table, row_index, col_index) ? "bg-green-100" : "" %>">
+    <div class="flex flex-col gap-y-4 items-start">
+    <% get_data_at(table, row_index, col_index).each_with_index do |data, data_index| %>
+    <%= render :partial => "capability_item", :locals => { key: data[:key], label: data[:label], description: data[:description], value: data[:value] } %>
+    <% end %>
+    </div>
+</td>
