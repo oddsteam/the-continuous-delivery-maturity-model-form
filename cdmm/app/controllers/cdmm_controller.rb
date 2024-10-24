@@ -14,8 +14,16 @@ class CdmmController < ApplicationController
     # draft form will be purged regularly
 
     def purge
-        Evaluation.where(:form_status => :draft).destroy_all
-        render_empty
+        deleted_rows = Evaluation.where(:form_status => :draft, :created_at => ...6.hours.ago)
+        deleted_count = deleted_rows.count
+        deleted_rows.destroy_all
+        headers = [
+            {
+                :key => "X-Rows-Affected",
+                :value => "#{deleted_count}"
+            }
+        ]
+        render_empty headers
     end
 
     def index
@@ -699,9 +707,14 @@ class CdmmController < ApplicationController
         end
     end
 
-    def render_empty
+    def render_empty(headers = [])
         respond_to do |format|
-            format.any  { head :ok }
+            format.any do
+                headers.each do |header|
+                    response.headers[header[:key]] = header[:value]
+                end
+                head :ok
+            end
         end
     end
 
