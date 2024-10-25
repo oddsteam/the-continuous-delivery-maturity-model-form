@@ -2,10 +2,20 @@
     set_meta_tags(
         title: @table[:title],
         description: @table[:title],
+        url: @table[:canonical_url],
+        image_src: @table[:preview_image], 
         og: {
             title: @table[:title],
-            description: @table[:title]
-        }
+            description: @table[:title],
+            url: @table[:canonical_url],
+            image: @table[:preview_image], 
+        },
+        twitter: {
+            title: @table[:title],
+            description: @table[:title],
+            url: @table[:canonical_url],
+            image: @table[:preview_image], 
+        },
     )
 %>
 
