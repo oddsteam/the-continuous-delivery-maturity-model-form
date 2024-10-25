@@ -184,7 +184,10 @@ class CdmmController < ApplicationController
     end
 
     def evaluation_table(form_data = nil, form_key = nil)
+        canonical_url = request.env['rack.url_scheme'] + '://' + request.host_with_port + '/cdmm/' + form_key
         table = {
+            :canonical_url => canonical_url,
+            :preview_image => canonical_url + '/preview',
             :form_key => form_key ? form_key : "",
             :form_status => :draft,
             :title => form_data[:title],
