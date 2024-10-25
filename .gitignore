@@ -36,3 +36,5 @@
 
 /cdmm/app/assets/builds/*
 !/cdmm/app/assets/builds/.keep
+
+.DS_Store

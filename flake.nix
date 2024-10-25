@@ -12,6 +12,7 @@
       ${system}.default = nixpkgs.legacyPackages.${system}.mkShell {
         buildInputs = with nixpkgs.legacyPackages.${system}; [
           ruby_3_3
+          imagemagick
           # playwright
           # playwright-driver
         ];
