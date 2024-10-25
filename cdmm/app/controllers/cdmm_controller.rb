@@ -1,3 +1,5 @@
+require 'rmagick'
+
 class CdmmController < ApplicationController
     include ApplicationHelper
     # Viewing
@@ -12,6 +14,88 @@ class CdmmController < ApplicationController
 
     # Purging
     # draft form will be purged regularly
+
+    def preview
+        options = {
+            :dimension => {
+                :width => 820,
+                :height => 320
+            },
+            :border_bar => {
+                :height => 15,
+                :color => "#336699"
+            },
+            :padding => {
+                :left => 50,
+                :top => 50
+            },
+            :title => {
+                :size => 32,
+                :font => Rails.root.join('app', 'assets', 'fonts', 'Prompt-Bold.ttf').to_s,
+                :color => "black"
+            },
+            :subtitle => {
+                :size => 24,
+                :font => Rails.root.join('app', 'assets', 'fonts', 'Prompt-Regular.ttf').to_s,
+                :color => "#505050"
+            },
+            :background => {
+                :image => Rails.root.join('app', 'assets', 'images', 'preview-background.png').to_s,
+            }
+        }
+
+
+        @form = Evaluation.find_by(form_key: params[:form_key])
+        if @form
+            image = Magick::Image.new(options[:dimension][:width], options[:dimension][:height]) { |options| options.background_color = 'white' }
+            draw = Magick::Draw.new
+
+            # Draw background
+            background_image = Magick::Image.read(options[:background][:image]).first
+            background_image.resize!(0.40)
+
+            image = image.composite(background_image, Magick::SouthEastGravity, Magick::OverCompositeOp)
+
+            # Draw top border
+            draw.fill(options[:border_bar][:color])
+            draw.rectangle(0, 0, options[:dimension][:width], options[:border_bar][:height])
+            draw.draw(image)
+
+            # Draw title
+            draw.font_weight = Magick::BoldWeight
+            draw.pointsize = options[:title][:size]
+            draw.gravity = Magick::NorthWestGravity
+            draw.annotate(image, 
+                options[:dimension][:width] - (options[:padding][:left] * 2),
+                options[:dimension][:height] - (options[:padding][:top] * 2),
+                options[:padding][:left],
+                options[:padding][:top], 
+                @form[:title]) do |opts|
+                    opts.font = options[:title][:font]
+                    opts.fill = options[:title][:color]
+            end
+
+            # Draw subtitle
+            draw.font_weight = Magick::NormalWeight
+            draw.pointsize = options[:subtitle][:size]
+            draw.gravity = Magick::NorthWestGravity
+            draw.annotate(image, 
+                options[:dimension][:width] - (options[:padding][:left] * 2),
+                options[:dimension][:height] - (options[:padding][:top] * 2),
+                options[:padding][:left],
+                options[:padding][:top] + (options[:title][:size] * 1.3), 
+                "Continuous Delivery Maturity Model") do |opts|
+                    opts.font = options[:subtitle][:font]
+                    opts.fill = options[:subtitle][:color]
+            end
+
+            image.format = 'PNG'
+        
+            send_data image.to_blob, type: 'image/png', disposition: 'inline'
+        else
+            render_not_found
+        end
+    end
 
     def purge
         deleted_rows = Evaluation.where(:form_status => :draft, :created_at => ...6.hours.ago)

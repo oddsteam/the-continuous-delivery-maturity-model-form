@@ -23,6 +23,15 @@ jobs:
         with:
           ruby-version: '3.3.5'
           bundler-cache: true
+      - name: Install dependencies
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -O 'https://imagemagick.org/archive/binaries/magick'
+          chmod u+x magick
+          mv magick "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Verify dependencies
+        run: magick -version
       - name: Set up database schema
         working-directory: ./cdmm
         run: bundle install && bin/rails db:schema:load && bin/rails db:migrate
