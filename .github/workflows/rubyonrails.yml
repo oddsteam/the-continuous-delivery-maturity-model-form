@@ -25,6 +25,7 @@ jobs:
           bundler-cache: true
       - name: Install dependencies
         run: |
+          sudo apt-get update && sudo apt-get install libfuse2
           mkdir -p "$HOME/.local/bin"
           curl -O 'https://imagemagick.org/archive/binaries/magick'
           chmod u+x magick
