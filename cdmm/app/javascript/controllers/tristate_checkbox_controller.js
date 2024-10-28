@@ -21,7 +21,7 @@ export default class extends Controller {
       }
     }
     this.updateView();
-    this.dispatch('toggled', { prefix: this.identifierValue });
+    this.dispatch('toggled', { detail: { state: this.state }, prefix: this.identifierValue });
   }
 
   updateView() {
