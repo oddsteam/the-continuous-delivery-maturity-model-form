@@ -107,7 +107,7 @@ class CdmmController < ApplicationController
                 :value => "#{deleted_count}"
             }
         ]
-        render_empty headers
+        render :json => { :purgedRow => deleted_count }
     end
 
     def index
