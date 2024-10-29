@@ -1,6 +1,8 @@
 module CdmmHelper
     def get_data_at(table, row_index, col_index)
-        if table[:rows].count < row_index + 1
+        if row_index < 0 || col_index < 0
+            []
+        elsif table[:rows].count < row_index + 1
             []
         elsif table[:rows][row_index].count < col_index + 1
             []
