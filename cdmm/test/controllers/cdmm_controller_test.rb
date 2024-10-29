@@ -1,18 +1,13 @@
 require "test_helper"
 
 class CdmmControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
   test "accessing the cdmm without key will create a draft blank form" do
     assert_difference("Evaluation.count") do
       get evaluation_index_path
 
-      assert_response :redirect
-      redirect_path = response.location
-      form_key = redirect_path.split("/").last
+      ev = Evaluation.last
 
-      ev = Evaluation.find_by(form_key: form_key)
+      assert_redirected_to evaluation_show_path(ev.form_key)
       assert_equal "draft", ev.form_status
     end
   end
